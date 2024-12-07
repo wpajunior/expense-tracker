@@ -6,6 +6,7 @@ import re
 
 from typing import List
 
+
 def get_source_id(text_lines: List[str]) -> str:
     '''Extracts the source id from the file'''
     if len(text_lines) < 8:
@@ -42,7 +43,7 @@ def extract_data(input_file: str, output_file: str) -> None:
 
         source_id = get_source_id(text_lines)
         file_id = get_file_id(text_lines)
-        field_names = ['id', 'date', 'description', 'amount_eur', 'source_id']
+        field_names = ['id', 'date', 'description', 'amount_eur', 'original_currency', 'source_id']
 
         with open(output_file, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=field_names)
@@ -58,7 +59,8 @@ def extract_data(input_file: str, output_file: str) -> None:
                                 'id': file_id + str(i),
                                 'date': res.group(1),
                                 'description': res.group(3),
-                                'amount_eur': res.group(4).replace(',', '.'),
+                                'amount_eur': '-' + res.group(4).replace(',', '.'),
+                                'original_currency': 'EUR',
                                 'source_id': source_id
                             }
                             writer.writerow(row_dict)
