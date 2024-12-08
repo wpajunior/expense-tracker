@@ -4,7 +4,8 @@ import hashlib
 import pdfplumber
 import re
 
-from typing import List
+from datetime import datetime
+from typing import List, Tuple
 
 
 def get_source_id(text_lines: List[str]) -> str:
@@ -35,11 +36,24 @@ def get_file_id(text_lines: List[str]) -> str:
     hash_object = hashlib.sha256(id_line.encode())
     return hash_object.hexdigest()[:16]
 
+def extract_years(text_lines: List[str]) -> Tuple[str, str]:
+    '''Extracts the year from the file'''
+    if len(text_lines) < 18:
+        raise ValueError(('File does not contain enough lines to extract years'))
+
+    date_range_line = text_lines[18]
+    res = re.search(r'vom\s(\d\d\.\d\d\.\d\d)bis\s(\d\d\.\d\d\.\d\d)', date_range_line)
+    if res is None:
+        raise ValueError(('Could not extract years from file'))
+    
+    return res.group(1)[-2:], res.group(2)[-2:]
+
 
 def extract_data(input_file: str, output_file: str) -> None:
     with pdfplumber.open(input_file) as pdf:
         text = pdf.pages[0].extract_text()
         text_lines = text.splitlines()
+        year_start, year_end = extract_years(text_lines)
 
         source_id = get_source_id(text_lines)
         file_id = get_file_id(text_lines)
@@ -55,9 +69,16 @@ def extract_data(input_file: str, output_file: str) -> None:
                     for row in table:
                         res = re.search(r'^(\d\d\.\d\d)\s(\d\d\.\d\d)\s(.+)\s(\d+,\d\d)$', row[0])
                         if res is not None:
+                            if res.group(1)[-2:] == '01':
+                                year = year_end
+                            else:
+                                year = year_start
+
+                            transaction_date_str = res.group(1) + '.' + year
+                            transaction_date = datetime.strptime(transaction_date_str, '%d.%m.%y')
                             row_dict = {
                                 'id': file_id + str(i),
-                                'date': res.group(1),
+                                'date': transaction_date.strftime('%Y-%m-%d'),
                                 'description': res.group(3),
                                 'amount_eur': '-' + res.group(4).replace(',', '.'),
                                 'original_currency': 'EUR',
