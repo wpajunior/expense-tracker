@@ -25,7 +25,7 @@ def extract_data(input_file: str, output_file: str) -> None:
     with open(input_file, 'r') as csvfile:
         file_id = get_file_id(csvfile)
         reader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
-        field_names = ['id', 'date', 'description', 'amount_eur', 'amount_usd', 'original_currency', 'source_id']
+        field_names = ['id', 'date', 'description', 'amount_eur', 'amount_usd', 'amount_brl', 'original_currency', 'source_id']
 
         with open(output_file, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=field_names)
