@@ -58,7 +58,7 @@ def get_transaction_categories(transactions: List[Dict]) -> List[str]:
         messages=[
             {
                 "role": "system",
-                "content": "You are responsible for classifying transactions based on their description. Consider that I live in Potsdam/Germany but I might also have expenses in Brazil. The input will contain the transaction id and the transaction description separated by comma. For each input line, give as output thetransaction id and the category separated by comma. These are the possible categories:Salary,Contract Work,Investment Income,Rental Income,Other Income,Rent,Utilities,Insurance,Subscriptions,Groceries,Eating Out,Transportation,Healthcare,Subscriptions,Entertainment,Shopping,Education,Travel,Investment,Donations,Gifts,Fees and Charges,Transfers Between Accounts,Other Expenses",
+                "content": "You are responsible for classifying transactions based on their description. Consider that I live in Potsdam/Germany but I might also have expenses in Brazil. The input will contain the transaction id and the transaction description separated by comma. For each input line, give as output the transaction id and the category separated by comma without anything else so I can parse it on my system. These are the possible categories:Salary,Contract Work,Investment Income,Rental Income,Other Income,Rent,Utilities,Insurance,Subscriptions,Groceries,Eating Out,Transportation,Healthcare,Subscriptions,Entertainment,Shopping,Education,Travel,Investment,Donations,Gifts,Fees and Charges,Transfers Between Accounts,Other Expenses",
             },
             {
                 "role": "user",
