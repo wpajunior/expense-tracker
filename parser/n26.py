@@ -33,7 +33,7 @@ def extract_data(input_file: str) -> List[Dict[str, str]]:
                 'id': file_id + str(i),
                 'date': row['Value Date'],
                 'description': row['Partner Name'],
-                'amount_eur': row['Amount (EUR)'],
+                'amount_eur': float(row['Amount (EUR)']),
                 'original_currency': row['Original Currency'].upper(),
                 'source_id': source_id
             }
@@ -41,9 +41,9 @@ def extract_data(input_file: str) -> List[Dict[str, str]]:
                 row_dict['original_currency'] = 'EUR'
             
             if row['Original Currency'] == 'USD':
-                row_dict['amount_usd'] = '-' + row['Original Amount']
+                row_dict['amount_usd'] = float('-' + row['Original Amount'])
             elif row['Original Currency'] == 'BRL':
-                row_dict['amount_brl'] = '-' + row['Original Amount']
+                row_dict['amount_brl'] = float('-' + row['Original Amount'])
             transactions.append(row_dict)
             i += 1
     return transactions

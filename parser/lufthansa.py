@@ -21,6 +21,9 @@ def _get_file_id(f: TextIO) -> str:
     f.seek(0)
     return hash_object.hexdigest()[:16]
 
+def _convert_to_float(amount: str) -> float:
+    return float(amount.replace('.', '').replace(',', '.'))
+
 def extract_data(input_file: str) -> List[Dict[str, str]]:
     source_id = _get_source_id()
     transactions = []
@@ -44,16 +47,16 @@ def extract_data(input_file: str) -> List[Dict[str, str]]:
                 'id': file_id + str(i),
                 'date': parsed_date.strftime('%Y-%m-%d'),
                 'description': row['Description'],
-                'amount_eur': row['Amount'].replace(',', '.'),
+                'amount_eur': _convert_to_float(row['Amount']),
                 'original_currency': row['Original currency'],
                 'source_id': source_id
             }
             if row_dict['original_currency'] == '':
                 row_dict['original_currency'] = 'EUR'
             if row['Original currency'] == 'USD':
-                row_dict['amount_usd'] = row['Amount in foreign currency'].replace(',', '.')
+                row_dict['amount_usd'] = _convert_to_float(row['Amount in foreign currency'])
             elif row['Original currency'] == 'BRL':
-                row_dict['amount_brl'] = row['Amount in foreign currency'].replace(',', '.')
+                row_dict['amount_brl'] = _convert_to_float(row['Amount in foreign currency'])
             transactions.append(row_dict)
             i += 1
     return transactions

@@ -34,7 +34,7 @@ def extract_data(input_file: str) -> List[Dict[str, str]]:
                 'id': file_id + str(i),
                 'date': parsed_date.strftime('%Y-%m-%d'),
                 'description': row['Buchungstext'],
-                'amount_eur': row['Betrag'],
+                'amount_eur': float(row['Betrag'].replace(',', '.')),
                 'original_currency': row['Währung'],
                 'source_id': source_id
             }

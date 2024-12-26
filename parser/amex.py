@@ -77,7 +77,7 @@ def extract_data(input_file: str) -> List[Dict[str, str]]:
                             'id': file_id + str(i),
                             'date': transaction_date.strftime('%Y-%m-%d'),
                             'description': res.group(3),
-                            'amount_eur': '-' + res.group(4).replace(',', '.'),
+                            'amount_eur': float('-' + res.group(4).replace(',', '.')),
                             'original_currency': 'EUR',
                             'source_id': source_id
                         }
